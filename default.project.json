@@ -1,0 +1,32 @@
+{
+	"name": "roblox-horror",
+	"tree": {
+		"$className": "DataModel",
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+			"$path": "src/server"
+		},
+		"StarterPlayer": {
+			"$className": "StarterPlayer",
+			"StarterPlayerScripts": {
+				"$className": "StarterPlayerScripts",
+				"$path": "src/client"
+			}
+		},
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"$path": "src/shared"
+		},
+		"Lighting": {
+			"$className": "Lighting",
+			"Ambient": [0.02, 0.02, 0.04],
+			"Brightness": 0,
+			"ClockTime": 0,
+			"FogColor": [0.05, 0.05, 0.08],
+			"FogEnd": 150,
+			"FogStart": 10,
+			"GlobalShadows": true,
+			"OutdoorAmbient": [0.03, 0.03, 0.06]
+		}
+	}
+}
