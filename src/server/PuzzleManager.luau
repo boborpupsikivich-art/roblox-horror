@@ -12,6 +12,7 @@ local puzzleStates: { [string]: string } = {}
 local puzzleProgress: { [string]: any } = {}
 local onSolvedCallback = nil
 local timerThread: thread? = nil
+local interactConnection: RBXScriptConnection? = nil
 
 function PuzzleManager.init(puzzleConfigs: { any }, onSolved: (string) -> ())
 	puzzles = {}
@@ -25,7 +26,10 @@ function PuzzleManager.init(puzzleConfigs: { any }, onSolved: (string) -> ())
 		puzzleProgress[config.id] = {}
 	end
 
-	RemoteEvents.get("PuzzleInteract").OnServerEvent:Connect(function(player, puzzleId, action, target)
+	if interactConnection then
+		interactConnection:Disconnect()
+	end
+	interactConnection = RemoteEvents.get("PuzzleInteract").OnServerEvent:Connect(function(player, puzzleId, action, target)
 		PuzzleManager.handleInteraction(player, puzzleId, action, target)
 	end)
 

@@ -58,23 +58,35 @@ Death: one dies → other continues alone. Both die → respawn at last checkpoi
 
 ### Prerequisites
 - Roblox Studio (https://create.roblox.com)
-- Rojo CLI: `brew install rojo` (macOS) or download from https://github.com/rojo-rbx/rojo/releases
+- Rojo CLI: `D:/Vibe/tools/rojo.exe` (already installed, v7.6.1)
 
 ### Quick Start
 1. Clone this repo
 2. Open Roblox Studio → Create new Baseplate
 3. Install Rojo plugin: Plugins → Manage Plugins → search "Rojo"
-4. Terminal: `rojo serve` (from project root)
+4. Terminal: `D:/Vibe/tools/rojo.exe serve` (from project root)
 5. Studio: Rojo plugin → Connect
 6. Build the 3D map following `assets/map-building-guide.md`
 7. Play!
 
 ### Roblox Studio MCP (AI-assisted building)
-If using Claude Code, connect the official Roblox MCP:
-```bash
-claude mcp add Roblox_Studio -- /Applications/RobloxStudio.app/Contents/MacOS/StudioMCP
-```
-This lets Claude create objects, set properties, generate meshes, run playtests — all from terminal.
+MCP server `robloxstudio` (boshyxd/robloxstudio-mcp) is configured in Claude Code.
+
+**Setup in Studio (one-time):**
+1. Download the companion plugin `.rbxm` from https://github.com/boshyxd/robloxstudio-mcp/releases
+2. Place it in `%LOCALAPPDATA%/Roblox/Plugins/`
+3. In Studio: Game Settings → Security → Enable "Allow HTTP Requests"
+4. Restart Studio — plugin toolbar should appear
+
+**What Claude can do via MCP (39 tools):**
+- Explore game hierarchy, search objects by name/class
+- Create/delete/duplicate/reparent instances
+- Read and edit script source code
+- Set properties (including bulk operations)
+- Manage attributes and CollectionService tags
+- Terrain operations
+- Control playtests (start/stop)
+- Execute Luau code directly in Studio
 
 ## Next Steps
 

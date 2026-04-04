@@ -90,4 +90,14 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, triggeringPlayer
 	end
 end)
 
+-- Auto-ready: fire PlayerReady once character loads
+local function onCharacterAdded()
+	RemoteEvents.get("PlayerReady"):FireServer()
+end
+
+if player.Character then
+	onCharacterAdded()
+end
+player.CharacterAdded:Connect(onCharacterAdded)
+
 print("[ClientController] Initialized")

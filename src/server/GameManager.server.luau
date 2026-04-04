@@ -39,12 +39,12 @@ transitionTo = function(newState: string)
 		solvedPuzzles = {}
 		triggeredZones = {}
 		activeCheckpoint = nil
-		local spawn = workspace:FindFirstChild("Chapter1") and workspace.Chapter1:FindFirstChild("PlayerSpawn")
-		if spawn then
+		local spawnPoint = workspace:FindFirstChild("Chapter1") and workspace.Chapter1:FindFirstChild("PlayerSpawn")
+		if spawnPoint then
 			for _, player in Players:GetPlayers() do
 				local char = player.Character
 				if char and char:FindFirstChild("HumanoidRootPart") then
-					char.HumanoidRootPart.CFrame = spawn.CFrame + Vector3.new(0, 3, 0)
+					char.HumanoidRootPart.CFrame = spawnPoint.CFrame + Vector3.new(0, 3, 0)
 				end
 			end
 		end
