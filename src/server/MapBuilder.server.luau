@@ -305,19 +305,133 @@ part("Lid", sarcModel, Vector3.new(6, 0.5, 10),
 	Vector3.new(0, 2.25, 85), Color3.fromRGB(110, 100, 90), Enum.Material.Marble)
 
 -- =============================================================================
--- DRAUGR MODEL (invisible until spawned by ScareManager)
+-- DRAUGR MODEL — humanoid shape, invisible until ScareManager reveals
 -- =============================================================================
 local draugrModel = make("Model", "Draugr", chapter, {})
-local draugrBody = part("Body", draugrModel, Vector3.new(2, 5, 2),
-	Vector3.new(0, 10, 80), Color3.fromRGB(60, 55, 50), Enum.Material.Slate)
-draugrBody.Transparency = 1
-draugrBody.CanCollide = false
-make("PointLight", "Glow", draugrBody, {
-	Brightness = 0.3,
-	Range = 15,
-	Color = Color3.fromRGB(50, 180, 150),
+local draugrColor = Color3.fromRGB(65, 75, 55)
+local draugrBodyParts = {
+	{ n = "Torso",    s = Vector3.new(2, 2.5, 1),   p = Vector3.new(0, 10, 80),   c = draugrColor },
+	{ n = "Head",     s = Vector3.new(1.2, 1.4, 1), p = Vector3.new(0, 12, 80),   c = Color3.fromRGB(85, 95, 70), ball = true },
+	{ n = "LeftArm",  s = Vector3.new(0.7, 2.5, 0.7), p = Vector3.new(-1.5, 10, 80), c = draugrColor },
+	{ n = "RightArm", s = Vector3.new(0.7, 2.5, 0.7), p = Vector3.new(1.5, 10, 80),  c = draugrColor },
+	{ n = "LeftLeg",  s = Vector3.new(0.8, 2.5, 0.8), p = Vector3.new(-0.5, 7, 80),  c = draugrColor },
+	{ n = "RightLeg", s = Vector3.new(0.8, 2.5, 0.8), p = Vector3.new(0.5, 7, 80),   c = draugrColor },
+}
+for _, bp in draugrBodyParts do
+	local pp = part(bp.n, draugrModel, bp.s, bp.p, bp.c, Enum.Material.Slate)
+	pp.Transparency = 1
+	pp.CanCollide = false
+	if bp.ball then pp.Shape = Enum.PartType.Ball end
+end
+make("PointLight", "Glow", draugrModel:FindFirstChild("Torso"), {
+	Brightness = 0.4,
+	Range = 20,
+	Color = Color3.fromRGB(80, 200, 170),
 	Enabled = false,
 })
+
+-- =============================================================================
+-- FOREST: trees + runestones in south area (forest outside the mound)
+-- =============================================================================
+local forestFolder = make("Folder", "Forest", chapter, {})
+math.randomseed(42)
+for i = 1, 30 do
+	local x = math.random(-35, 35)
+	local z = math.random(-75, -22)
+	if math.abs(x) < 4 and z > -42 then x = x + 10 end
+	local treeH = math.random(6, 12)
+	local tree = make("Model", "Tree_" .. i, forestFolder, {})
+	local trunk = make("Part", "Trunk", tree, {
+		Size = Vector3.new(1.5, treeH, 1.5),
+		Color = Color3.fromRGB(55, 35, 20),
+		Material = Enum.Material.Wood,
+		Anchored = true,
+	})
+	trunk.CFrame = CFrame.new(x, treeH / 2, z)
+	for j = 1, 3 do
+		local sz = math.random(4, 7)
+		make("Part", "Foliage", tree, {
+			Size = Vector3.new(sz, sz, sz),
+			Position = Vector3.new(x + math.random(-2, 2), treeH + math.random(-1, 2), z + math.random(-2, 2)),
+			Color = Color3.fromRGB(30 + math.random(0, 20), 55 + math.random(0, 20), 25),
+			Material = Enum.Material.Grass,
+			Shape = Enum.PartType.Ball,
+			Anchored = true,
+		})
+	end
+end
+for i = 1, 5 do
+	local x = math.random(-30, 30)
+	local z = math.random(-55, -25)
+	make("Part", "Runestone_" .. i, forestFolder, {
+		Size = Vector3.new(1.5, math.random(4, 7), 0.8),
+		Position = Vector3.new(x, 3, z),
+		Color = Color3.fromRGB(120, 110, 100),
+		Material = Enum.Material.Slate,
+		Anchored = true,
+		Orientation = Vector3.new(0, math.random(0, 180), math.random(-10, 10)),
+	})
+end
+
+-- =============================================================================
+-- BONES AND SKULLS — scattered decor in burial/draugr chambers
+-- =============================================================================
+local bonesFolder = make("Folder", "Bones", chapter, {})
+for i = 1, 8 do
+	local x = math.random(-8, 8)
+	local z = 40 + math.random(-6, 6)
+	make("Part", "Bone_" .. i, bonesFolder, {
+		Size = Vector3.new(0.3, 0.3, math.random(2, 4)),
+		Position = Vector3.new(x, 0.2, z),
+		Color = Color3.fromRGB(220, 210, 190),
+		Material = Enum.Material.SmoothPlastic,
+		Anchored = true,
+		Orientation = Vector3.new(0, math.random(0, 180), 0),
+	})
+end
+for i = 1, 4 do
+	local x = math.random(-12, 12)
+	local z = 80 + math.random(-10, 10)
+	make("Part", "Skull_" .. i, bonesFolder, {
+		Size = Vector3.new(1.2, 1, 1.3),
+		Position = Vector3.new(x, 0.6, z),
+		Color = Color3.fromRGB(230, 220, 200),
+		Material = Enum.Material.SmoothPlastic,
+		Shape = Enum.PartType.Ball,
+		Anchored = true,
+	})
+end
+
+-- =============================================================================
+-- ATMOSPHERIC FOG particles inside chambers
+-- =============================================================================
+local atmosphere = make("Folder", "Atmosphere", chapter, {})
+for _, pos in { Vector3.new(0, 3, 15), Vector3.new(0, 3, 45), Vector3.new(0, 4, 80) } do
+	local attach = make("Part", "FogSource", atmosphere, {
+		Size = Vector3.new(0.1, 0.1, 0.1),
+		Position = pos,
+		Anchored = true,
+		CanCollide = false,
+		Transparency = 1,
+	})
+	make("ParticleEmitter", "Fog", attach, {
+		Texture = "rbxasset://textures/particles/smoke_main.dds",
+		Lifetime = NumberRange.new(8, 14),
+		Rate = 5,
+		Speed = NumberRange.new(0.5, 1.5),
+		Size = NumberSequence.new(8, 15),
+		Transparency = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, 1),
+			NumberSequenceKeypoint.new(0.3, 0.85),
+			NumberSequenceKeypoint.new(0.7, 0.85),
+			NumberSequenceKeypoint.new(1, 1),
+		}),
+		Color = ColorSequence.new(Color3.fromRGB(120, 130, 140)),
+		Rotation = NumberRange.new(0, 360),
+		RotSpeed = NumberRange.new(-10, 10),
+		LightEmission = 0.1,
+	})
+end
 
 -- =============================================================================
 -- LIGHTING (torches throughout)
@@ -333,4 +447,4 @@ for _, pos in torchPositions do
 	torch(lightingFolder, pos)
 end
 
-print("[MapBuilder] Map built: 7 zones, 14 puzzle items, 8 torches, 2 notes")
+print("[MapBuilder] Map built: 7 zones, 14 puzzle items, 8 torches, 2 notes, 30 trees, 12 bones")
