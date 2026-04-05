@@ -17,6 +17,12 @@
 			"$className": "ReplicatedStorage",
 			"$path": "src/shared"
 		},
+		"HttpService": {
+			"$className": "HttpService",
+			"$properties": {
+				"HttpEnabled": true
+			}
+		},
 		"Lighting": {
 			"$className": "Lighting",
 			"$properties": {

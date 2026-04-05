@@ -3,3 +3,5 @@
 *.rbxlx
 .DS_Store
 node_modules/
+game.rbxl.lock
+game.rbxlx
